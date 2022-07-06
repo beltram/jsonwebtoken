@@ -38,10 +38,10 @@ pub(crate) fn sign(
     key: &[u8],
     message: &[u8],
 ) -> Result<String> {
-    let key_pair = signature::RsaKeyPair::from_der(key)
-        .map_err(|e| ErrorKind::InvalidRsaKey(e.description_()))?;
+    let key_pair = ring::rsa::KeyPair::from_der(key)
+        .map_err(|_| ErrorKind::InvalidRsaKey("TODO"))?;
 
-    let mut signature = vec![0; key_pair.public_modulus_len()];
+    let mut signature = vec![0; key_pair.public().modulus_len()];
     let rng = rand::SystemRandom::new();
     key_pair.sign(alg, &rng, message, &mut signature).map_err(|_| ErrorKind::RsaFailedSigning)?;
 

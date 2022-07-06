@@ -29,7 +29,12 @@ pub fn sign(message: &[u8], key: &EncodingKey, algorithm: Algorithm) -> Result<S
         Algorithm::HS512 => Ok(sign_hmac(hmac::HMAC_SHA512, key.inner(), message)),
 
         Algorithm::ES256 | Algorithm::ES384 => {
-            ecdsa::sign(ecdsa::alg_to_ec_signing(algorithm), key.inner(), message)
+            #[cfg(not(target_family = "wasm"))] {
+                ecdsa::sign(ecdsa::alg_to_ec_signing(algorithm), key.inner(), message)
+            }
+            #[cfg(target_family = "wasm")] {
+                unimplemented!()
+            }
         }
 
         Algorithm::EdDSA => eddsa::sign(key.inner(), message),
@@ -77,12 +82,14 @@ pub fn verify(
             let signed = sign(message, &EncodingKey::from_secret(key.as_bytes()), algorithm)?;
             Ok(verify_slices_are_equal(signature.as_ref(), signed.as_ref()).is_ok())
         }
-        Algorithm::ES256 | Algorithm::ES384 => verify_ring(
-            ecdsa::alg_to_ec_verification(algorithm),
-            signature,
-            message,
-            key.as_bytes(),
-        ),
+        Algorithm::ES256 | Algorithm::ES384 => {
+            #[cfg(not(target_family = "wasm"))] {
+                verify_ring(ecdsa::alg_to_ec_verification(algorithm), signature, message, key.as_bytes())
+            }
+            #[cfg(target_family = "wasm")] {
+                unimplemented!()
+            }
+        }
         Algorithm::EdDSA => verify_ring(
             eddsa::alg_to_ec_verification(algorithm),
             signature,

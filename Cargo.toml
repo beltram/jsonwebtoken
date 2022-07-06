@@ -14,16 +14,28 @@ include = ["src/**/*", "benches/**/*", "tests/**/*", "LICENSE", "README.md", "CH
 [dependencies]
 serde_json = "1.0"
 serde = {version = "1.0", features = ["derive"] }
-ring = { version = "0.16.5", features = ["std"] }
 base64 = "0.13"
 # For PEM decoding
 pem = {version = "1", optional = true}
 simple_asn1 = {version = "0.6", optional = true}
+fluvio-wasm-timer = "0.2"
+
+[dependencies.ring]
+git = "https://github.com/briansmith/ring.git"
+rev = "0f3bf003"
+# requires the latest version to have Ed25519 support on WASM
+features = ["std", "wasm32_unknown_unknown_js"]
 
 [dev-dependencies]
 # For the custom time example
 time = "0.3"
 criterion = "0.3"
+wasm-bindgen-test = "0.3"
+
+[dev-dependencies.chrono]
+version = "=0.4.19"
+default-features = false
+features = ["wasmbind", "std", "clock"]
 
 [features]
 default = ["use_pem"]

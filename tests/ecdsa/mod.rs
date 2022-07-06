@@ -3,7 +3,7 @@ use jsonwebtoken::{
     decode, encode, Algorithm, DecodingKey, EncodingKey, Header, Validation,
 };
 use serde::{Deserialize, Serialize};
-use time::OffsetDateTime;
+use crate::utils::*;
 
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
 pub struct Claims {
@@ -39,7 +39,7 @@ fn round_trip_sign_verification_pem() {
         &DecodingKey::from_ec_pem(pubkey_pem).unwrap(),
         Algorithm::ES256,
     )
-    .unwrap();
+        .unwrap();
     assert!(is_valid);
 }
 
@@ -51,20 +51,20 @@ fn round_trip_claim() {
     let my_claims = Claims {
         sub: "b@b.com".to_string(),
         company: "ACME".to_string(),
-        exp: OffsetDateTime::now_utc().unix_timestamp() + 10000,
+        exp: unix_timestamp() + 10000,
     };
     let token = encode(
         &Header::new(Algorithm::ES256),
         &my_claims,
         &EncodingKey::from_ec_pem(privkey_pem).unwrap(),
     )
-    .unwrap();
+        .unwrap();
     let token_data = decode::<Claims>(
         &token,
         &DecodingKey::from_ec_pem(pubkey_pem).unwrap(),
         &Validation::new(Algorithm::ES256),
     )
-    .unwrap();
+        .unwrap();
     assert_eq!(my_claims, token_data.claims);
 }
 
@@ -78,19 +78,19 @@ fn roundtrip_with_jwtio_example() {
     let my_claims = Claims {
         sub: "b@b.com".to_string(),
         company: "ACME".to_string(),
-        exp: OffsetDateTime::now_utc().unix_timestamp() + 10000,
+        exp: unix_timestamp() + 10000,
     };
     let token = encode(
         &Header::new(Algorithm::ES384),
         &my_claims,
         &EncodingKey::from_ec_pem(privkey_pem).unwrap(),
     )
-    .unwrap();
+        .unwrap();
     let token_data = decode::<Claims>(
         &token,
         &DecodingKey::from_ec_pem(pubkey_pem).unwrap(),
         &Validation::new(Algorithm::ES384),
     )
-    .unwrap();
+        .unwrap();
     assert_eq!(my_claims, token_data.claims);
 }

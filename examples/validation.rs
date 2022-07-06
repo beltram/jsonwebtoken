@@ -16,7 +16,7 @@ fn main() {
         aud: "me".to_owned(),
         sub: "b@b.com".to_owned(),
         company: "ACME".to_owned(),
-        exp: 10000000000,
+        exp: usize::MAX,
     };
     let token = match encode(&Header::default(), &my_claims, &EncodingKey::from_secret(key)) {
         Ok(t) => t,

@@ -12,7 +12,7 @@ struct Claims {
 
 fn main() {
     let my_claims =
-        Claims { sub: "b@b.com".to_owned(), company: "ACME".to_owned(), exp: 10000000000 };
+        Claims { sub: "b@b.com".to_owned(), company: "ACME".to_owned(), exp: usize::MAX };
     let key = b"secret";
 
     let header =

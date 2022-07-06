@@ -385,8 +385,12 @@ mod tests {
     use crate::jwk::{AlgorithmParameters, JwkSet, OctetKeyType};
     use crate::Algorithm;
     use serde_json::json;
+    use wasm_bindgen_test::*;
+
+    wasm_bindgen_test_configure!(run_in_browser);
 
     #[test]
+    #[wasm_bindgen_test]
     fn check_hs256() {
         let key =
             base64::encode_config("abcdefghijklmnopqrstuvwxyz012345", base64::URL_SAFE_NO_PAD);
