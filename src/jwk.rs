@@ -325,9 +325,25 @@ pub struct OctetKeyPairParameters {
     /// The "crv" (curve) parameter identifies the cryptographic curve used
     /// with the key.
     #[serde(rename = "crv")]
-    pub curve: EllipticCurve,
+    pub curve: EdwardCurve,
     /// The "x" parameter contains the base64 encoded public key
     pub x: String,
+}
+
+/// Type of cryptographic curve used by a key. This is defined in
+/// [RFC 7518 #7.6](https://tools.ietf.org/html/rfc7518#section-7.6)
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize, Hash)]
+pub enum EdwardCurve {
+    /// Ed25519 curve
+    Ed25519,
+    /// Ed448 curve
+    Ed448,
+}
+
+impl Default for EdwardCurve {
+    fn default() -> Self {
+        Self::Ed25519
+    }
 }
 
 /// Algorithm specific parameters
